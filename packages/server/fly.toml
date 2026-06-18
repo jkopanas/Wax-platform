@@ -16,6 +16,7 @@ auto_stop_machines = 'stop'
 auto_start_machines = true
 min_machines_running = 1
 processes = ['app']
+sticky_sessions = true
 
 [[services]]
 protocol = 'tcp'
@@ -44,7 +45,7 @@ cpus = 2
 
 [env]
 NODE_ENV = 'production'
-CLIENT_URL = 'https://app.wax.is'
+CLIENT_URL = 'https://wax-platform-client.fly.dev'
 SERVER_URL = 'https://wax-server.fly.dev'
 WEBSOCKET_SERVER_URL = 'wss://wax-server.fly.dev'
 CLIENT_PANDOC_URL='https://wax-staging-pandoc.fly.dev'
@@ -60,7 +61,7 @@ TEMP_DIRECTORY_CLEAN_UP = true
 FEATURE_UPLOAD_DOCX_FILES = true
 FEATURE_BOOK_STRUCTURE = false
 FEATURE_POD = true
-SERVICE_PAGEDJS_URL = 'https://pagedjs-ms.fly.dev'
+SERVICE_PAGEDJS_URL = 'https://pagedjs.fly.dev'
 SERVICE_XSWEET_URL = 'https://xsweet-ms.fly.dev'
 SERVICE_PANDOC_URL = 'https://wax-staging-pandoc.fly.dev'
 

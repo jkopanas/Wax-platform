@@ -299,6 +299,9 @@ const pagedPreviewerLink = async (dirPath, previewerOptions = undefined) => {
       })
         .then(async ({ data }) => {
           await fs.remove(zipPath)
+          if (!data || !data.link) {
+            return reject(new Error('PagedJS service returned an invalid response (missing link)'))
+          }
           return resolve(data)
         })
         .catch(async err => {
@@ -313,7 +316,7 @@ const pagedPreviewerLink = async (dirPath, previewerOptions = undefined) => {
               )
             }
 
-            return reject(err.message)
+            return reject(new Error(err.message || 'PagedJS service is unreachable'))
           }
 
           const { status, data } = response

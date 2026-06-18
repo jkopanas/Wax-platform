@@ -412,9 +412,11 @@ const getPagedPreviewerLinkHandler = async (
 ) => {
   try {
     logger.info('book resolver: executing getPreviewerLink use case')
-    return pagedPreviewerLink(hash, previewerOptions)
+    return await pagedPreviewerLink(hash, previewerOptions)
   } catch (e) {
-    throw new Error(e)
+    const message = (e instanceof Error ? e.message : String(e)) || 'Preview generation failed'
+    logger.error(`getPagedPreviewerLink error: ${message}`)
+    throw new Error(message)
   }
 }
 

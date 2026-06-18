@@ -103,7 +103,14 @@ const seedTemplates = async () => {
     await fs.remove(templatesFolder)
     logger.info('******* Templates folder removed ********')
   } catch (e) {
-    fs.remove(templatesFolder)
+    if (templatesFolder) {
+      try {
+        await fs.remove(templatesFolder)
+      } catch (err) {
+        logger.error(`Failed to remove templates folder: ${err.message}`)
+      }
+    }
+
     throw new Error(e.message)
   }
 }

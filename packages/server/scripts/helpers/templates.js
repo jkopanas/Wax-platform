@@ -344,16 +344,59 @@ const getTemplates = async () => {
         }))
       : []
 
+    const isRemoteTest = url => /^(https?:\/\/|git@|.*\.git$)/i.test(url)
+
+    const localTemplates = normalizedTemplates.filter(t => !isRemoteTest(t.url))
+    const remoteTemplates = normalizedTemplates.filter(t => isRemoteTest(t.url))
+
+    const tempLocalFolder = path.join(__dirname, '..', '..', 'templates_local_tmp')
+
+    // Prepare temp folder for local template copies
+    await fs.remove(tempLocalFolder)
+    await fs.ensureDir(tempLocalFolder)
+
+    // Copy local template sources into temp folder BEFORE cleaning destination
+    await Promise.all(
+      localTemplates.map(async templateDetails => {
+        const { url, label } = templateDetails
+
+        const candidates = [
+          path.resolve(url),
+          path.join(__dirname, '..', '..', url),
+          path.join(__dirname, '..', '..', 'config', url),
+          path.join(__dirname, '..', '..', '..', 'templates', label),
+        ]
+
+        const found = candidates.find(candidate => fs.existsSync(candidate))
+
+        if (!found) {
+          throw new Error(
+            `local template path for ${label} not found. Tried: ${candidates.join(', ')}`,
+          )
+        }
+
+        await fs.copy(found, path.join(tempLocalFolder, label))
+        return true
+      }),
+    )
+
+    // Clean destination folder
     await cleanTemplatesFolder()
 
+    const destRoot = path.join(__dirname, '..', '..', 'templates')
+
+    // Move local templates from temp into destination
+    if (await fs.pathExists(tempLocalFolder)) {
+      await fs.copy(tempLocalFolder, destRoot)
+      await fs.remove(tempLocalFolder)
+    }
+
+    // Clone remote templates into destination
     return Promise.all(
-      normalizedTemplates.map(async templateDetails => {
+      remoteTemplates.map(async templateDetails => {
         const { url, label, branch } = templateDetails
-        return execute(
-          `git clone ${url} ${
-            branch ? `--branch ${branch}` : ''
-          } ./templates/${label} `,
-        )
+        const branchArg = branch ? `--branch ${branch}` : ''
+        return execute(`git clone ${branchArg} ${url} ./templates/${label}`)
       }),
     )
   } catch (e) {

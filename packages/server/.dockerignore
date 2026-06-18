@@ -32,7 +32,7 @@ logs/
 stories/
 tmp/
 uploads/
-templates
+# templates
 
 # Include README.md and LICENSE.md, exlcude the rest
 *.md

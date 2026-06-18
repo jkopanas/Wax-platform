@@ -1029,9 +1029,9 @@ const LuluLayout = ({ customProps, ...rest }) => {
                         </TrackTools>
                       )}
                     </TrackToolsContainer>
-                    <CitationContainer>
+                    {/* <CitationContainer>
                       <CitationRightArea />
-                    </CitationContainer>
+                    </CitationContainer> */}
                     <CommentsContainer>
                       <RightArea area="main" />
                     </CommentsContainer>

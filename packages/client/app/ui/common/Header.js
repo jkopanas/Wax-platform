@@ -148,10 +148,17 @@ const UlUsers = styled.ul`
 // #endregion styles
 
 const getInitials = fullname => {
-  const deconstructName = fullname.split(' ')
-  return `${deconstructName[0][0].toUpperCase()}${
-    deconstructName[1][0] && deconstructName[1][0].toUpperCase()
-  }`
+  if (!fullname) return ''
+
+  const deconstructName = fullname
+    .split(' ')
+    .map(part => part.trim())
+    .filter(Boolean)
+
+  const firstInitial = deconstructName[0]?.[0]?.toUpperCase() || ''
+  const secondInitial = deconstructName[1]?.[0]?.toUpperCase() || ''
+
+  return `${firstInitial}${secondInitial}`
 }
 
 const OtherUsers = ({ currentUser }) => {
